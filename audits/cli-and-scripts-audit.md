@@ -97,6 +97,11 @@ Audit the command-line tools, shell and PowerShell scripts, installers, setup an
 
 42. **README** covers requirements, supported platforms, installation, every option, examples for common tasks, what the script changes on the system, how to undo it, and troubleshooting; the documentation matches the code.
 
+### Windows and system configuration tools
+
+43. **Windows specifics**: Batch and `cmd` scripts quote paths, check `errorlevel` and avoid `pause` in unattended runs; PowerShell scripts state the execution-policy requirement and are signed where the deployment needs it; registry, policy and service changes go through a documented list with the previous value saved.
+44. **System tweak and hardening tools**: every change maps to a documented baseline (for example CIS or STIG) or a stated reason; a restore point, backup or export is taken before changes; a restore or undo command reverts them; changes are tested on a clean installation of each supported OS version; settings that can break updates, DRM, security protections or features that depend on telemetry are called out.
+
 ## Changes (`fix` mode only)
 
 Apply contained fixes that do not change intended behavior: quoting, strict mode with its pitfalls handled, `trap` cleanup, `mktemp`, dependency checks, help text and documentation, `NO_COLOR` and terminal detection, exit codes, linter findings. Verify by running the linters, the tests, and `--help`, `--version` and `--dry-run`; run the script itself only in a container, a virtual machine or dry-run mode. Propose, but do not apply, changes to what the script does, to its flags, or to how it is distributed. Do not commit or push.

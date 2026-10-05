@@ -183,6 +183,7 @@ Apply the sections for every type the project matches, in addition to the univer
 - Strict error handling, quoted expansions, cleanup on exit, no `curl | sh` without a pinned version and checksum.
 - OS and distribution detection, dependency checks with install hints, no unnecessary root, no secrets.
 - Passes shellcheck, shfmt or PSScriptAnalyzer; tested on each supported platform.
+- System configuration and hardening tools (Windows registry and policies, macOS defaults, Android ADB): every change maps to a documented baseline or a stated reason, is reversible through a restore point or backup, and is tested on a clean installation of each supported version.
 
 ### Library, SDK or package
 
@@ -259,6 +260,21 @@ Apply the sections for every type the project matches, in addition to the univer
 
 - Host versions supported and tested; minimal permissions and activation; no blocking of the host's main thread; settings documented.
 - Published with correct metadata and a changelog; uninstall leaves nothing behind.
+- Agent skills, MCP servers and instruction files: descriptions and triggers accurate, instructions never widen permissions or hide side effects, tested with each target agent, and installers idempotent and reversible.
+
+### Security and offensive tooling
+
+- Authorization and scope are enforced in the tool, not only in the README: an explicit target scope, confirmation before active or intrusive actions, a passive or read-only mode by default, and a clear notice that use requires authorization.
+- Dangerous capabilities (exploits, credential testing, malware samples, packet injection) are gated, sandboxed and documented; samples and signatures cannot run by accident.
+- Every action is logged with target, time and operator; output never leaks credentials captured during a test; findings can be reported for responsible disclosure.
+- Bundled third-party tools are pinned, checksummed and license-compatible, and the tool itself passes the security audit it would run on others.
+
+### Automation acting on external accounts, devices or money
+
+- Dry-run or paper mode by default; irreversible actions (transfers, trades, orders, deletions, blocking, device changes) need explicit confirmation or an explicit flag, with the scope stated.
+- Hard limits on amount, count and rate, a kill switch, idempotent operations with deduplication, and reconciliation against the external system's state.
+- Credentials scoped to the minimum (read-only where possible), kept in the platform's secret store and out of logs; the external service's API terms and rate limits respected.
+- A complete audit trail of what was sent and received, and a documented way to undo or compensate for a wrong action.
 
 ### Monorepo and multi-service
 

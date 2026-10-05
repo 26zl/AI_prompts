@@ -21,7 +21,7 @@ Model-agnostic prompts for building, reviewing and shipping software with AI. De
 
 | Prompt | Use it to |
 | --- | --- |
-| [Full project audit](audits/full-project-audit.md) | Score a project across 17 areas and 20 project types, add its domain-specific requirements, and get the plan to 100% |
+| [Full project audit](audits/full-project-audit.md) | Score a project across 17 areas and 22 project types, add its domain-specific requirements, and get the plan to 100% |
 | [Production readiness review](audits/production-readiness-review.md) | Decide whether a project is ready for production, with safe fixes along the way |
 | [Security audit](audits/security-audit.md) | Run 76 checks, from leaked secrets and broken access control to webhooks, CI/CD and AI features. `Depth: quick` covers the 25 launch essentials |
 | [Threat model](audits/threat-model.md) | Map assets, attackers, trust boundaries and threats at the design level |
@@ -76,7 +76,10 @@ Every project benefits from the full project audit, the repository audit and the
 | Web app, SaaS, e-commerce | Security, legal, accessibility, UX, performance, operations, data, API design, threat model |
 | API or backend service | Security, API design, data, operations, performance, threat model, infrastructure |
 | CLI tool | CLI and scripts, security, UX (command-line section) |
-| Shell or PowerShell scripts, installers, setup tools, dotfiles | CLI and scripts, security |
+| Shell or PowerShell scripts, installers, setup and hardening tools, dotfiles | CLI and scripts, security |
+| Security and offensive tooling (scanners, auditors, sandboxes) | Security, threat model, CLI and scripts, legal (authorized use) |
+| Automation acting on external accounts, devices or money (bots, trading, banking CLIs, device tweaks) | Security, CLI and scripts, operations, legal |
+| Agent skills, MCP servers, plugins | Security, AI feature, repository |
 | Library, SDK or package | API design (SDK section), security, performance |
 | Mobile app | Security, legal, accessibility, UX, performance, operations |
 | Desktop app or browser extension | Security, legal, accessibility, UX |
