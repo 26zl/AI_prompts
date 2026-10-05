@@ -1,6 +1,19 @@
 # AI Prompts
 
-Model-agnostic prompts for building, reviewing and shipping software with AI. They work in any chat (ChatGPT, Claude, Gemini, Copilot, Mistral, DeepSeek, local models) and in coding agents (Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode and others), for any language or stack.
+[![Validate](https://github.com/26zl/AI_prompts/actions/workflows/validate.yml/badge.svg)](https://github.com/26zl/AI_prompts/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+Model-agnostic prompts for building, reviewing and shipping software with AI. They work in any chat (ChatGPT, Claude, Gemini, Copilot, Mistral, DeepSeek, local models) and in coding agents (Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode and others), for any language, stack or project type.
+
+## Start here
+
+| Situation | Prompt |
+| --- | --- |
+| Starting something new | [Start a new project](development/start-project.md) sets up the whole baseline from the first commit |
+| An existing project you want checked from end to end | [Full project audit](audits/full-project-audit.md) scores every area, applies project-type checks, and tells you which deep dives to run |
+| About to release | [Production readiness review](audits/production-readiness-review.md), then [Prepare a release](development/prepare-release.md) |
+| Something is broken in production | [Incident response and postmortem](operations/incident-response.md) |
+| Day-to-day work | The [development](#development) prompts |
 
 ## Prompts
 
@@ -8,29 +21,72 @@ Model-agnostic prompts for building, reviewing and shipping software with AI. Th
 
 | Prompt | Use it to |
 | --- | --- |
-| [Production readiness review](audits/production-readiness-review.md) | Decide whether a project is ready for production across 12 areas, with safe fixes along the way |
+| [Full project audit](audits/full-project-audit.md) | Score a project across 17 areas and 20 project types, and get the plan to 100% |
+| [Production readiness review](audits/production-readiness-review.md) | Decide whether a project is ready for production, with safe fixes along the way |
 | [Security audit](audits/security-audit.md) | Run 76 checks, from leaked secrets and broken access control to webhooks, CI/CD and AI features. `Depth: quick` covers the 25 launch essentials |
+| [Threat model](audits/threat-model.md) | Map assets, attackers, trust boundaries and threats at the design level |
 | [Legal and compliance review](audits/legal-compliance-review.md) | Catch privacy, cookie, consumer-protection, marketing-claim, accessibility and licensing risks before launch |
 | [Accessibility audit](audits/accessibility-audit.md) | Audit against WCAG 2.2 AA and fix the barriers |
+| [UX review](audits/ux-review.md) | Check usability, states, copy, emails, localization and command-line ergonomics |
 | [Performance audit](audits/performance-audit.md) | Find and fix the bottlenecks that matter, backed by measurements |
+| [Operations and reliability audit](audits/operations-audit.md) | Check observability, alerting, deployments, backups, recovery, resilience and cost |
+| [Infrastructure and configuration audit](audits/infrastructure-audit.md) | Review Terraform, Ansible, Kubernetes, Docker, Nix, CI pipelines and cloud configuration |
+| [Data and database audit](audits/data-audit.md) | Review schemas, migrations, queries, integrity, access, backups and pipelines |
+| [API design review](audits/api-design-review.md) | Review REST, GraphQL, gRPC, webhooks and SDK surfaces for consistency and evolvability |
+| [Architecture and codebase health review](audits/architecture-review.md) | Assess structure, risks and technical debt, with a prioritized plan |
+| [AI feature review](audits/ai-feature-review.md) | Review LLM and ML features for reliability, evaluation, safety, privacy and cost |
+| [CLI and scripts audit](audits/cli-and-scripts-audit.md) | Make command-line tools, shell and PowerShell scripts, installers and dotfiles safe and portable |
+| [Repository audit](audits/repository-audit.md) | Check documentation, licensing, community files, metadata, history, automation and releases |
 
 ### Development
 
 | Prompt | Use it to |
 | --- | --- |
-| [Code review](development/code-review.md) | Review a diff, branch or pull request |
-| [Debug a problem](development/debug.md) | Find the root cause of a bug and fix it properly |
+| [Start a new project](development/start-project.md) | Scaffold a project with structure, tests, CI, docs, security basics and licensing in place |
 | [Implement a feature](development/implement-feature.md) | Plan, build, test and verify a feature |
+| [Debug a problem](development/debug.md) | Find the root cause of a bug and fix it properly |
 | [Write tests](development/write-tests.md) | Add tests that catch real bugs |
 | [Simplify and refactor](development/refactor.md) | Make code simpler without changing behavior |
+| [Code review](development/code-review.md) | Review a diff, branch or pull request |
 | [Explain this codebase](development/explain-codebase.md) | Get an onboarding guide to an unfamiliar project |
 | [Write documentation](development/write-docs.md) | Make the README and docs accurate and useful |
+| [Upgrade dependencies](development/upgrade-dependencies.md) | Upgrade packages and runtimes safely, security fixes first |
+| [Describe changes](development/describe-changes.md) | Write commit messages and pull request descriptions |
+| [Prepare a release](development/prepare-release.md) | Decide the version, update the changelog, write release notes and verify artifacts |
+
+### Operations
+
+| Prompt | Use it to |
+| --- | --- |
+| [Incident response and postmortem](operations/incident-response.md) | Stabilize a live incident, find the cause, and write a blameless postmortem |
 
 ### Prompting
 
 | Prompt | Use it to |
 | --- | --- |
 | [Improve a prompt](prompting/improve-prompt.md) | Turn any prompt into a clear, model-agnostic one |
+| [Write agent instructions](prompting/write-agent-instructions.md) | Create an accurate `AGENTS.md` or `CLAUDE.md` for a repository |
+
+## Which prompts for which project
+
+Every project benefits from the full project audit, the repository audit and the development prompts. On top of those:
+
+| Project type | Run these audits |
+| --- | --- |
+| Web app, SaaS, e-commerce | Security, legal, accessibility, UX, performance, operations, data, API design, threat model |
+| API or backend service | Security, API design, data, operations, performance, threat model, infrastructure |
+| CLI tool | CLI and scripts, security, UX (command-line section) |
+| Shell or PowerShell scripts, installers, setup tools, dotfiles | CLI and scripts, security |
+| Library, SDK or package | API design (SDK section), security, performance |
+| Mobile app | Security, legal, accessibility, UX, performance, operations |
+| Desktop app or browser extension | Security, legal, accessibility, UX |
+| Infrastructure, configuration, homelab, NixOS | Infrastructure, security, operations, CLI and scripts |
+| Data pipeline or analytics | Data, operations, security, performance |
+| Machine learning or AI product | AI feature, data, security, legal, performance |
+| Bot, integration, webhook, MCP server or agent skill | Security, AI feature, operations, API design (webhooks) |
+| Documentation site, template or content | Accessibility, UX, legal (licenses) |
+| Game | Performance, accessibility, UX, legal, security for multiplayer |
+| Embedded, firmware or driver | Security, CLI and scripts (build and install scripts), operations |
 
 ## Usage
 
@@ -50,11 +106,15 @@ Read ~/path/to/AI_prompts/audits/security-audit.md and follow it for this projec
 
 Most prompts start with a short **Settings** block. The defaults work as they are; edit a value to change the behavior:
 
-- `Mode: report` makes a review read-only, and `Mode: fix` lets the AI apply safe, contained fixes. The legal review and code review start in `report`; the other prompts with a Mode setting start in `fix`. Changes are never committed or pushed unless you ask.
+- `Mode: report` makes a review read-only, and `Mode: fix` lets the AI apply safe, contained fixes. Each prompt states its default: reviews that touch infrastructure, data, contracts, design or legal questions start in `report`, the rest in `fix`. Changes are never committed or pushed unless you ask.
 - `Report language: Norwegian` (or any other language) gets the report in that language. The prompts themselves are in English because that is the language models follow most consistently.
 - `Scope: the payment flow only` narrows a review.
 
 You can also add instructions after the prompt, for example "Focus on the admin panel" or "The app is only sold in Norway".
+
+## What 100% means
+
+A project is complete when every check that applies to it passes with evidence, and nothing is left "Not verified" that you have not consciously accepted. The full project audit defines the checks per area and per project type; each deep-dive prompt defines the same for its area. Checks that do not apply to a project type are marked "Not applicable", so the target is 100% of what applies, not every check in every prompt.
 
 ## Design principles
 
@@ -63,11 +123,11 @@ You can also add instructions after the prompt, for example "Focus on the admin 
 - **Evidence over opinion**: findings cite files, lines, configuration or command output, and anything unverifiable is marked instead of guessed.
 - **Safe by default**: no printed secrets, destructive commands, dependency changes, deployments, commits or pushes without approval.
 - **Stack-agnostic**: the AI identifies the project type and adapts, marking irrelevant checks "Not applicable".
-- **Consistent reports**: verdict first, then findings by severity, then what remains.
+- **Consistent reports**: a verdict first, then findings by severity, then what remains.
 
 ## Adding a prompt
 
-Start from this skeleton, run the result through [Improve a prompt](prompting/improve-prompt.md), and test it with at least two different models:
+Start from this skeleton, run the result through [Improve a prompt](prompting/improve-prompt.md), test it with at least two different models, and run `scripts/validate.sh` before committing. CI runs the same script on every push; it checks structure, numbering, links, whitespace and secret-like strings.
 
 ```markdown
 # Title

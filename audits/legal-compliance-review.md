@@ -80,6 +80,7 @@ This is a spot check, not a full WCAG audit.
 Apply what is relevant for the markets in scope. These are examples, not a complete list:
 
 - **EU/EEA**: GDPR; national cookie and ePrivacy rules; the Consumer Rights, Unfair Commercial Practices and Price Indication Directives; e-commerce information duties; the Digital Services Act for platforms with user content; the European Accessibility Act; the AI Act's transparency obligations; and national laws in each market.
+- **Norway** (EEA): GDPR through personopplysningsloven; ekomloven for cookies and similar technologies; markedsføringsloven for marketing, dark patterns, price claims and consent to electronic marketing; angrerettloven for the right of withdrawal; ehandelsloven for business information duties; supervised by Datatilsynet and Forbrukertilsynet.
 - **UK**: UK GDPR and the Data Protection Act 2018, PECR, the Consumer Rights Act 2015, the Digital Markets, Competition and Consumers Act 2024, the Equality Act 2010, the Age Appropriate Design Code and the Online Safety Act.
 - **US**: Section 5 of the FTC Act and FTC rules (including the rule on fake reviews and testimonials), COPPA, CAN-SPAM, the TCPA for text messages and calls, ROSCA and state automatic-renewal laws for subscriptions, state privacy laws such as the CCPA/CPRA, state pricing laws, and the ADA.
 - **Elsewhere**: for example PIPEDA, CASL and Quebec's Law 25 in Canada; the LGPD in Brazil; the Privacy Act, Spam Act and Australian Consumer Law in Australia.

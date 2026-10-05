@@ -15,6 +15,10 @@ If there is no prompt, ask for it before doing anything else.
 
 Intended use can be a chat message, a system prompt, a coding-agent task or an automated API call. If the prompt is not in English, mention that an English version is usually followed more consistently, especially by smaller models, and offer one.
 
+## Working environment
+
+This prompt needs no project access and works the same in a chat and in a coding agent. If the prompt refers to files, tools or a codebase you cannot see, treat them as inputs the improved prompt must describe, not as things to look up.
+
 ## How to work
 
 1. **Identify the intent**: the goal, the audience, the inputs, the expected output, and what a good result looks like. If the intent is genuinely unclear, ask up to three questions first; otherwise state your interpretation.

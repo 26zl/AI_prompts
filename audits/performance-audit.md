@@ -66,6 +66,11 @@ Propose, but do not apply: database migrations (including new indexes on large t
 
 For every change, show before-and-after measurements, or explain why measuring was not possible. Rerun the tests to confirm that behavior is unchanged.
 
+## Rules
+
+- Never print secret values found in configuration or logs along the way; refer to their location only.
+- Base every finding on a measurement or a code location; label estimates as such and never present them as measured.
+
 ## Report
 
 1. **Summary**: overall assessment and the top three to five bottlenecks with their expected impact.
