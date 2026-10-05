@@ -3,7 +3,7 @@
 [![Validate](https://github.com/26zl/AI_prompts/actions/workflows/validate.yml/badge.svg)](https://github.com/26zl/AI_prompts/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Model-agnostic prompts for building, reviewing and shipping software with AI. They work in any chat (ChatGPT, Claude, Gemini, Copilot, Mistral, DeepSeek, local models) and in coding agents (Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode and others), for any language, stack or project type.
+Model-agnostic prompts for building, reviewing and shipping software with AI. Designed for chats (ChatGPT, Claude, Gemini, Copilot, Mistral, DeepSeek, local models) and coding agents (Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode and others), across languages and stacks. They provide a broad baseline; the depth of the review depends on the project, supplied evidence, model and available tools.
 
 ## Start here
 
@@ -21,18 +21,18 @@ Model-agnostic prompts for building, reviewing and shipping software with AI. Th
 
 | Prompt | Use it to |
 | --- | --- |
-| [Full project audit](audits/full-project-audit.md) | Score a project across 17 areas and 20 project types, and get the plan to 100% |
+| [Full project audit](audits/full-project-audit.md) | Score a project across 17 areas and 20 project types, add its domain-specific requirements, and get the plan to 100% |
 | [Production readiness review](audits/production-readiness-review.md) | Decide whether a project is ready for production, with safe fixes along the way |
 | [Security audit](audits/security-audit.md) | Run 76 checks, from leaked secrets and broken access control to webhooks, CI/CD and AI features. `Depth: quick` covers the 25 launch essentials |
 | [Threat model](audits/threat-model.md) | Map assets, attackers, trust boundaries and threats at the design level |
 | [Legal and compliance review](audits/legal-compliance-review.md) | Catch privacy, cookie, consumer-protection, marketing-claim, accessibility and licensing risks before launch |
-| [Accessibility audit](audits/accessibility-audit.md) | Audit against WCAG 2.2 AA and fix the barriers |
+| [Accessibility audit](audits/accessibility-audit.md) | Review every WCAG 2.2 A and AA criterion, record evidence and fix practical barriers |
 | [UX review](audits/ux-review.md) | Check usability, states, copy, emails, localization and command-line ergonomics |
 | [Performance audit](audits/performance-audit.md) | Find and fix the bottlenecks that matter, backed by measurements |
-| [Operations and reliability audit](audits/operations-audit.md) | Check observability, alerting, deployments, backups, recovery, resilience and cost |
+| [Operations and reliability audit](audits/operations-audit.md) | Check observability, deployments, recovery, resilience, cost and safe retirement |
 | [Infrastructure and configuration audit](audits/infrastructure-audit.md) | Review Terraform, Ansible, Kubernetes, Docker, Nix, CI pipelines and cloud configuration |
 | [Data and database audit](audits/data-audit.md) | Review schemas, migrations, queries, integrity, access, backups and pipelines |
-| [API design review](audits/api-design-review.md) | Review REST, GraphQL, gRPC, webhooks and SDK surfaces for consistency and evolvability |
+| [API design review](audits/api-design-review.md) | Review REST, GraphQL, gRPC, WebSocket, SSE, webhooks and SDK surfaces for consistency and compatibility |
 | [Architecture and codebase health review](audits/architecture-review.md) | Assess structure, risks and technical debt, with a prioritized plan |
 | [AI feature review](audits/ai-feature-review.md) | Review LLM and ML features for reliability, evaluation, safety, privacy and cost |
 | [CLI and scripts audit](audits/cli-and-scripts-audit.md) | Make command-line tools, shell and PowerShell scripts, installers and dotfiles safe and portable |
@@ -88,6 +88,8 @@ Every project benefits from the full project audit, the repository audit and the
 | Game | Performance, accessibility, UX, legal, security for multiplayer |
 | Embedded, firmware or driver | Security, CLI and scripts (build and install scripts), operations |
 
+Mobile, desktop, extensions, embedded systems, smart contracts and research code have baseline checks in the full audit, not a complete specialist audit. Identify the target platforms, hazards and applicable domain standards before judging readiness. Regulated health, finance or safety-critical systems also need domain expertise and any required independent assessment.
+
 ## Usage
 
 Each file is one complete prompt: copy the whole file, nothing else is needed.
@@ -106,7 +108,7 @@ Read ~/path/to/AI_prompts/audits/security-audit.md and follow it for this projec
 
 Most prompts start with a short **Settings** block. The defaults work as they are; edit a value to change the behavior:
 
-- `Mode: report` makes a review read-only, and `Mode: fix` lets the AI apply safe, contained fixes. Each prompt states its default: reviews that touch infrastructure, data, contracts, design or legal questions start in `report`, the rest in `fix`. Changes are never committed or pushed unless you ask.
+- `Mode: report` makes a review read-only, and `Mode: fix` lets the AI apply the contained fixes listed in that prompt. Each prompt states its default. Referenced prompts and delegated tasks inherit the current mode, scope and permissions, retaining any stricter limits; their defaults cannot broaden them. Changes are never committed or pushed unless you ask.
 - `Report language: Norwegian` (or any other language) gets the report in that language. The prompts themselves are in English because that is the language models follow most consistently.
 - `Scope: the payment flow only` narrows a review.
 
@@ -114,20 +116,20 @@ You can also add instructions after the prompt, for example "Focus on the admin 
 
 ## What 100% means
 
-A project is complete when every check that applies to it passes with evidence, and nothing is left "Not verified" that you have not consciously accepted. The full project audit defines the checks per area and per project type; each deep-dive prompt defines the same for its area. Checks that do not apply to a project type are marked "Not applicable", so the target is 100% of what applies, not every check in every prompt.
+A project is at 100% when every check that applies to it passes with evidence: the universal areas, the project-type checks, and any domain requirements identified for it. The full project audit defines those checks; each deep-dive prompt defines the same for its area. "Not applicable" needs a reason, and "Not verified" never counts as a pass, even when you accept the risk; accepted risks are listed separately with an owner, a rationale and a review date. The score measures completion of the declared checks, not proof that no defect exists, and an unknown critical requirement blocks an unconditional readiness verdict.
 
 ## Design principles
 
 - **Self-contained and portable**: plain Markdown with no vendor-specific syntax, tools or features.
 - **With or without project access**: with access, the AI verifies by itself; without it, the AI asks for what it needs.
 - **Evidence over opinion**: findings cite files, lines, configuration or command output, and anything unverifiable is marked instead of guessed.
-- **Safe by default**: no printed secrets, destructive commands, dependency changes, deployments, commits or pushes without approval.
+- **Safe by default**: every prompt includes safety boundaries. Inspect commands and their target environments before running them; isolate checks that write artifacts. Never print secrets or personal data. Dependency changes, destructive actions and external side effects require explicit authorization, which can already be supplied by the task.
 - **Stack-agnostic**: the AI identifies the project type and adapts, marking irrelevant checks "Not applicable".
 - **Consistent reports**: a verdict first, then findings by severity, then what remains.
 
 ## Adding a prompt
 
-Start from this skeleton, run the result through [Improve a prompt](prompting/improve-prompt.md), test it with at least two different models, and run `scripts/validate.sh` before committing. CI runs the same script on every push; it checks structure, numbering, links, whitespace and secret-like strings.
+Start from this skeleton, run the result through [Improve a prompt](prompting/improve-prompt.md), and evaluate relevant [synthetic cases](evals/cases.md) with at least two different models using the [evaluation procedure](evals/README.md). Record the prompt revision, model versions, results and evidence; unexecuted cases stay Not run. Before committing, run `scripts/validate.sh` and `bash scripts/test-validate.sh`. CI runs both checks; they check structure, safety sections, numbering, links, whitespace and secret-like strings, plus rejection of invalid inputs. They do not execute models or establish prompt quality.
 
 ```markdown
 # Title
@@ -143,6 +145,10 @@ The goal in one or two sentences, and what a good result looks like.
 
 - With access to the project: ...
 - Without access (a plain chat): ...
+
+## Safety boundaries
+
+(Copy the four bullets from any audit; every prompt carries the same block.)
 
 ## How to work
 
@@ -161,7 +167,7 @@ The goal in one or two sentences, and what a good result looks like.
 
 AI reviews miss things and sometimes get them wrong. Use these prompts to find problems faster, not as a replacement for professional penetration testing, accessibility testing with real users, or legal advice.
 
-The security and legal checklists started from popular "checks for your AI-built app" lists and were expanded with OWASP guidance, WCAG 2.2 and current regulation.
+The security and legal checklists started from popular "checks for your AI-built app" lists and were expanded with OWASP guidance, WCAG 2.2 and examples of relevant regulation. Legal, store and platform requirements change: each review must state its date, markets and the official sources checked, including effective dates and uncertainty. The collection does not certify security, accessibility or legal compliance.
 
 ## License
 
