@@ -47,7 +47,7 @@ Model-agnostic prompts for building, reviewing and shipping software with AI. De
 | [Debug a problem](development/debug.md) | Find the root cause of a bug and fix it properly |
 | [Write tests](development/write-tests.md) | Add tests that catch real bugs |
 | [Simplify and refactor](development/refactor.md) | Make code simpler without changing behavior |
-| [Code review](development/code-review.md) | Review a diff, branch or pull request |
+| [Review code](development/review-code.md) | Review a diff, branch or pull request |
 | [Explain this codebase](development/explain-codebase.md) | Get an onboarding guide to an unfamiliar project |
 | [Write documentation](development/write-docs.md) | Make the README and docs accurate and useful |
 | [Upgrade dependencies](development/upgrade-dependencies.md) | Upgrade packages and runtimes safely, security fixes first |
@@ -107,7 +107,7 @@ Read ~/path/to/AI_prompts/audits/security-audit.md and follow it for this projec
 
 **Deep dives.** The full project audit names the deep-dive prompt for each gap by its path in this repository, for example `audits/security-audit.md`. An agent that can read this folder follows it on its own, with the same mode and permissions; otherwise paste the named prompt into a new conversation. Nothing needs to be copied into the project.
 
-**As a reusable command.** Most coding agents can also store a prompt as a custom command or skill (for example Claude Code and Codex skills, Cursor commands or GitHub Copilot prompt files). See your agent's documentation for the location and format.
+**As skills.** The whole collection is distributed as Agent Skills through [universal-agent-skills](https://github.com/26zl/universal-agent-skills), which installs them for Claude Code, Codex, OpenCode and GitHub Copilot; there you run `/security-audit` (Claude Code) or `$security-audit` (Codex) in any project, and text after the command overrides the settings. `scripts/export-skills.py <path-to-universal-agent-skills>` regenerates the skills from these files after a change; the file `development/review-code.md` becomes the `review-code` skill because `code-review` is a built-in Claude Code command.
 
 ## Settings
 

@@ -35,13 +35,13 @@ Set "Confirm plan first" to `always` to approve every plan before coding starts,
 4. **Implement in small steps**, following the existing conventions for structure, naming, error handling, logging and styling, and reusing existing utilities and components.
 5. **Handle the details**: input validation, authorization, empty, loading and error states, edge cases, accessibility for user interfaces, and user-facing text.
 6. **Test**: add or update tests for the new behavior and its edge cases, following the project's testing patterns.
-7. **Verify**: run the tests, linting, type checks and build. Review your own diff for unrelated changes, debug code, leftover TODOs and secrets.
+7. **Verify**: run the tests, linting, type checks and build. Review your own diff for unrelated changes, debug code, leftover todo markers and secrets.
 8. **Document**: update documentation, configuration examples such as `.env.example`, or the changelog where the project keeps them.
 
 ## Rules
 
 - Keep the diff focused: no drive-by refactoring, reformatting or renaming. Report unrelated problems you notice instead of ignoring them or fixing them silently.
-- No placeholder implementations, mock data in production code, or TODOs presented as finished work. If you cannot complete something, say so clearly.
+- No placeholder implementations, mock data in production code, or todo markers presented as finished work. If you cannot complete something, say so clearly.
 - Do not add dependencies without explaining why and getting my approval.
 - Never hardcode secrets; use the project's configuration mechanism and document only the variable name.
 - Add comments only for non-obvious intent or constraints.

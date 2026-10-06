@@ -88,7 +88,7 @@ Find and remove comments that:
 - run to several paragraphs where a sentence would do
 - are decorative separator lines made of dashes, equals signs or similar
 
-Also look for typical leftovers from AI-assisted development: placeholder or mock implementations in production paths ("TODO: implement", hardcoded sample data), commented-out code, duplicated helpers, debug logging, and stray plan, notes or summary files.
+Also look for typical leftovers from AI-assisted development: placeholder or mock implementations in production paths ("todo: implement" comments, hardcoded sample data), commented-out code, duplicated helpers, debug logging, and stray plan, notes or summary files.
 
 Keep comments that explain non-obvious intent, security requirements or important constraints; they should normally be one short sentence. Do not remove legitimate mentions of AI or plugins that are part of the product itself.
 

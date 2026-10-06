@@ -28,7 +28,7 @@ This is read-only. Do not change files.
 1. **Establish the context**: what the system does, its quality requirements (scale, availability, latency, security, compliance, cost), the team size and skills, the expected lifetime, and the roadmap. An architecture is only good or bad relative to these.
 2. **Reconstruct the actual architecture** from the code, not from the documentation: components, layers, dependencies between modules, data flow, runtime topology, external services, and how cross-cutting concerns (authentication, validation, errors, logging, configuration, transactions) are handled.
 3. **Compare** the intended architecture (documentation, folder structure, naming) with the actual one; note where they diverge.
-4. **Measure codebase health** with what is available: size per module, complexity and churn hotspots (files that are both complex and frequently changed), duplication, dead code, test coverage distribution, lint and type-check status, dependency age, and the inventory of TODO, FIXME and HACK comments.
+4. **Measure codebase health** with what is available: size per module, complexity and churn hotspots (files that are both complex and frequently changed), duplication, dead code, test coverage distribution, lint and type-check status, dependency age, and the inventory of todo, fixme and hack comments.
 5. **Evaluate** against the checklist; give every item Strong, Adequate, Weak or Not applicable, with evidence.
 6. **Build the technical debt register** and the recommendations.
 

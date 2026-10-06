@@ -51,7 +51,7 @@ Audit the command-line tools, shell and PowerShell scripts, installers, setup an
 13. **Backups and rollback**: files are backed up before modification; an uninstall or restore path exists for installers and system tweaks and is documented.
 14. **Scoped operations**: no deletion or modification of paths built from unvalidated variables; `rm -rf "$dir"/*` with an empty or unset variable cannot happen; targets are validated to be inside the expected location.
 15. **Privileges**: no unnecessary root or administrator rights; the script refuses to run as root unless needed, or elevates only for specific steps and explains why; sudo use is explicit and visible.
-16. **Downloads**: pinned versions, HTTPS, checksum or signature verification, and no `curl | sh` of unpinned, unverified content; downloaded scripts are saved and shown before execution where the user is expected to review them.
+16. **Downloads**: pinned versions, HTTPS, checksum or signature verification, and no downloaded script piped straight into a shell when it is unpinned or unverified; downloaded scripts are saved and shown before execution where the user is expected to review them.
 17. **Temporary files** created with `mktemp`, in a safe directory, cleaned up on exit and on interruption.
 18. **No secrets** in scripts, defaults, examples or logs; secrets read from environment variables, files with restricted permissions or a secret manager; commands containing secrets are not echoed or written to history.
 19. **Safe PATH and environment**: privileged scripts use absolute paths or a sanitized `PATH`; no reliance on the caller's aliases or shell options.

@@ -60,7 +60,7 @@ Check every item that applies. Give each item a result: Pass, Fail, Partial, Not
 4. The core flows work end to end with observed evidence. If running is impossible, trace them through the code, describe what that establishes, and mark unobserved runtime behavior Not verified; mocks do not establish real integration behavior.
 5. Edge cases are handled: empty and invalid input, large inputs, concurrency, time zones, Unicode, money precision.
 6. Failures are handled: no silently swallowed errors, no partial writes left behind, clear messages.
-7. No placeholder, stub or mock code remains in real code paths, and no TODO is presented as finished work.
+7. No placeholder, stub or mock code remains in real code paths, and no todo marker is presented as finished work.
 8. Documented behavior matches actual behavior.
 
 ### C. Security (deep dive: `audits/security-audit.md`; design level: `audits/threat-model.md`)
@@ -180,7 +180,7 @@ Apply the sections for every type the project matches, in addition to the univer
 ### Scripts, installers, setup scripts and dotfiles (deep dive: `audits/cli-and-scripts-audit.md`)
 
 - Idempotent and re-runnable; dry run and confirmation for destructive steps; a rollback or uninstall path.
-- Strict error handling, quoted expansions, cleanup on exit, no `curl | sh` without a pinned version and checksum.
+- Strict error handling, quoted expansions, cleanup on exit, no downloaded script piped straight into a shell without a pinned version and a checksum.
 - OS and distribution detection, dependency checks with install hints, no unnecessary root, no secrets.
 - Passes shellcheck, shfmt or PSScriptAnalyzer; tested on each supported platform.
 - System configuration and hardening tools (Windows registry and policies, macOS defaults, Android ADB): every change maps to a documented baseline or a stated reason, is reversible through a restore point or backup, and is tested on a clean installation of each supported version.
