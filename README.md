@@ -105,6 +105,8 @@ Each file is one complete prompt: copy the whole file, nothing else is needed.
 Read ~/path/to/AI_prompts/audits/security-audit.md and follow it for this project.
 ```
 
+**Deep dives.** The full project audit names the deep-dive prompt for each gap by its path in this repository, for example `audits/security-audit.md`. An agent that can read this folder follows it on its own, with the same mode and permissions; otherwise paste the named prompt into a new conversation. Nothing needs to be copied into the project.
+
 **As a reusable command.** Most coding agents can also store a prompt as a custom command or skill (for example Claude Code and Codex skills, Cursor commands or GitHub Copilot prompt files). See your agent's documentation for the location and format.
 
 ## Settings

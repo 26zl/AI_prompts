@@ -21,8 +21,8 @@ This is the broad pass. Most areas have a deeper prompt in this collection, name
 
 ## Working environment
 
-- **With access to the project** (a coding agent such as Claude Code, Codex, Cursor, Gemini CLI or GitHub Copilot): inspect the code, configuration, history and tooling yourself, and run checks within the safety boundaries. If deeper prompts are available as files, you may read and follow them for areas with gaps, carrying over this audit's mode, scope and permissions regardless of their defaults.
-- **Without access** (a plain chat): ask me for what you need, most important first: file tree, README, dependency manifests and lockfiles, configuration, CI and deployment files, entry points, and the code for the areas you are checking. Work in `report` mode and mark everything you could not see as "Not verified".
+- **With access to the project** (a coding agent such as Claude Code, Codex, Cursor, Gemini CLI or GitHub Copilot): inspect the code, configuration, history and tooling yourself, and run checks within the safety boundaries. The deeper prompts live next to this file in the same collection (the paths below, such as `audits/security-audit.md`, are relative to the collection's root, not to the project). If you can read them, follow them for the areas with gaps, carrying over this audit's mode, scope and permissions regardless of their defaults; if you cannot, name them in the report so I can supply them.
+- **Without access** (a plain chat): ask me for what you need, most important first: file tree, README, dependency manifests and lockfiles, configuration, CI and deployment files, entry points, and the code for the areas you are checking. Work in `report` mode and mark everything you could not see as "Not verified". Name the deep-dive prompt for each area with gaps; I will paste it into a new conversation.
 
 If the project is too large for one pass, cover every area for the whole project at low depth, go deep on the highest-risk component, and state what remains.
 
