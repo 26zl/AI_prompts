@@ -52,13 +52,15 @@ A change to `scripts/validate.sh` that alters what is accepted or rejected needs
 
 ## Exporting the skills
 
-The collection is distributed as Agent Skills through [universal-agent-skills](https://github.com/26zl/universal-agent-skills). After a prompt changes, regenerate the skills from a checkout of that repository and open a pull request there with the result:
+The collection is distributed as Agent Skills through [universal-agent-skills](https://github.com/26zl/universal-agent-skills). After a prompt change is merged here, run the export from a clean checkout of `main` into a checkout of that repository and open a pull request there with the result:
 
 ```sh
 scripts/export-skills.py <path-to-universal-agent-skills>
 ```
 
 For every prompt the script writes `skills/<name>/SKILL.md` (frontmatter from the `SKILLS` table, then the converted prompt body) and `skills/<name>/agents/openai.yaml`. The conversion replaces references to prompt paths with skill names, adds the note that text given with the invocation overrides the settings, and rewrites the placeholders that only make sense when pasting a prompt. The skill name is the file name; `development/review-code.md` is called that, rather than `code-review`, because `code-review` is a built-in Claude Code command.
+
+The script also keeps each exported skill's line in that repository's `.codex-plugin/plugin.json` `defaultPrompt` list in step, removes skills whose prompt no longer exists, and writes `ai-prompts.lock` with this repository's commit and the exported skill names. An export from uncommitted changes records the commit with a `-dirty` suffix, which universal-agent-skills' CI rejects, and that CI also fails when its generated files differ from what the recorded commit exports. A weekly job there opens an issue when `main` here has changes that are not exported yet.
 
 ## Commits and pull requests
 
