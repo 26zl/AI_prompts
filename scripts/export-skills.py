@@ -4,7 +4,10 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -12,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FOLDERS = ("audits", "development", "operations", "prompting")
 
 # name -> (display name, short description, description with trigger conditions)
+# The short description is a verb phrase because it completes "Use $name to ...".
 SKILLS: dict[str, tuple[str, str, str]] = {
     "full-project-audit": (
         "Full Project Audit",
@@ -30,12 +34,12 @@ SKILLS: dict[str, tuple[str, str, str]] = {
     ),
     "threat-model": (
         "Threat Model",
-        "Design-level threats, controls and mitigations",
+        "Map design-level threats, controls and mitigations",
         "Build a design-level threat model: data flows, trust boundaries, assets, attackers, STRIDE threats, existing controls, prioritized mitigations and a verification plan. Use when the user asks for a threat model, a risk analysis or a security design review before building or launching.",
     ),
     "legal-compliance-review": (
         "Legal and Compliance Review",
-        "Privacy, consumer-protection, marketing and licensing risks",
+        "Catch privacy, consumer-protection, marketing and licensing risks",
         "Review a product for privacy, cookie, consumer-protection, marketing-claim, accessibility-obligation and licensing risks, compare policies with what the code actually does, and prepare points for a lawyer. Use when the user asks about GDPR, cookies, terms, refunds, legal risk or compliance before launch.",
     ),
     "accessibility-audit": (
@@ -45,7 +49,7 @@ SKILLS: dict[str, tuple[str, str, str]] = {
     ),
     "ux-review": (
         "UX Review",
-        "Usability, states, copy, emails, localization and CLI ergonomics",
+        "Check usability, states, copy, emails, localization and CLI ergonomics",
         "Review usability: onboarding, navigation, forms, states, copy, emails, localization and command-line ergonomics, with concrete fixes. Use when the user asks for a UX or usability review, better copy or error messages, or a localization check.",
     ),
     "performance-audit": (
@@ -55,7 +59,7 @@ SKILLS: dict[str, tuple[str, str, str]] = {
     ),
     "operations-audit": (
         "Operations and Reliability Audit",
-        "Observability, deployments, backups, recovery and resilience",
+        "Check observability, deployments, backups, recovery and resilience",
         "Audit observability, alerting, deployments, backups, disaster recovery, resilience, security operations, cost and incident readiness. Use when the user asks whether a system can be operated and recovered, or wants an SRE, reliability or operations review.",
     ),
     "infrastructure-audit": (
@@ -65,22 +69,22 @@ SKILLS: dict[str, tuple[str, str, str]] = {
     ),
     "data-audit": (
         "Data and Database Audit",
-        "Schemas, migrations, queries, integrity, backups and pipelines",
+        "Review schemas, migrations, queries, integrity, backups and pipelines",
         "Audit schemas, migrations, queries, integrity, access control, backups, data quality and pipelines, without running anything against a live database. Use when the user asks for a database, schema, migration or data pipeline review.",
     ),
     "api-design-review": (
         "API Design Review",
-        "REST, GraphQL, gRPC, realtime, webhook and SDK surfaces",
+        "Review REST, GraphQL, gRPC, realtime, webhook and SDK surfaces",
         "Review REST, GraphQL, gRPC, WebSocket, SSE, webhook and SDK interfaces for consistency, errors, pagination, versioning, compatibility and documentation. Use when the user asks for an API design review, an API consistency check or a breaking-change assessment.",
     ),
     "architecture-review": (
         "Architecture and Codebase Health Review",
-        "Structure, risks and technical debt with a prioritized plan",
+        "Assess structure, risks and technical debt with a prioritized plan",
         "Assess architecture and codebase health: boundaries, consistency, runtime qualities, evolvability, hotspots and technical debt, with ranked risks and a prioritized plan. Use when the user asks whether the architecture fits, how healthy the codebase is, or which technical debt to pay first.",
     ),
     "ai-feature-review": (
         "AI Feature Review",
-        "Reliability, evaluation, safety, privacy and cost of AI features",
+        "Review AI features for reliability, evaluation, safety, privacy and cost",
         "Review LLM, agent, retrieval and ML features for reliability, evaluation, safety, privacy, cost and user experience. Use when the user asks to review an AI feature, prompts, RAG, agents with tools or a trained model.",
     ),
     "cli-and-scripts-audit": (
@@ -90,7 +94,7 @@ SKILLS: dict[str, tuple[str, str, str]] = {
     ),
     "repository-audit": (
         "Repository Audit",
-        "Docs, licensing, metadata, history, automation and releases",
+        "Check docs, licensing, metadata, history, automation and releases",
         "Audit a repository as a product: README, license, community and security files, metadata, history hygiene, branch protection, CI, dependency automation and releases. Use when the user asks to prepare a repository for publishing, open source or contributors, or wants a repository hygiene check.",
     ),
     "start-project": (
@@ -125,7 +129,7 @@ SKILLS: dict[str, tuple[str, str, str]] = {
     ),
     "explain-codebase": (
         "Explain This Codebase",
-        "An onboarding guide to an unfamiliar project",
+        "Get an onboarding guide to an unfamiliar project",
         "Explain an unfamiliar codebase: purpose, stack, how to run it, architecture, key flows, data model, conventions, where to make changes and gotchas. Use when the user asks how a project works, wants onboarding or an overview.",
     ),
     "write-docs": (
@@ -140,12 +144,12 @@ SKILLS: dict[str, tuple[str, str, str]] = {
     ),
     "describe-changes": (
         "Describe Changes",
-        "Commit messages and pull request descriptions",
+        "Write commit messages and pull request descriptions",
         "Write commit messages and pull request descriptions that explain what changed and why, matching the repository's conventions. Use when the user asks for a commit message or a pull request description.",
     ),
     "prepare-release": (
         "Prepare a Release",
-        "Version, changelog, release notes and verified artifacts",
+        "Decide the version, write the changelog and verify artifacts",
         "Prepare a release: decide the version, check readiness, update the version and changelog, write release notes, verify artifacts and list the commands to tag and publish. Use when the user asks to release, cut a version or write release notes.",
     ),
     "incident-response": (
@@ -160,7 +164,7 @@ SKILLS: dict[str, tuple[str, str, str]] = {
     ),
     "write-agent-instructions": (
         "Write Agent Instructions",
-        "An accurate AGENTS.md or CLAUDE.md for a repository",
+        "Write an accurate AGENTS.md or CLAUDE.md for a repository",
         "Write an accurate AGENTS.md or CLAUDE.md with verified commands, structure, conventions, boundaries and pitfalls, plus thin pointer files for other agents. Use when the user asks for an AGENTS.md, CLAUDE.md, Copilot instructions or Cursor rules.",
     ),
 }
@@ -191,6 +195,10 @@ PLACEHOLDER_RE = re.compile(r"\{\{Describe the (\w+) here or after this prompt: 
 PASTE_RE = re.compile(r"\{\{Paste the prompt here or after this prompt\.\}\}")
 OVERRIDE = "Text given with the skill invocation overrides these defaults."
 RENAMED = {"code-review": "review-code"}
+NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+SOURCE = "https://github.com/26zl/AI_prompts"
+LOCK = "ai-prompts.lock"
+MANIFEST = Path(".codex-plugin") / "plugin.json"
 
 
 def skill_name(path: Path) -> str:
@@ -214,16 +222,67 @@ def yaml_quote(value: str) -> str:
     return '"' + value.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
+def default_prompt(name: str, short: str) -> str:
+    return f"Use ${name} to {short[0].lower()}{short[1:]}."
+
+
+def source_commit() -> str:
+    try:
+        commit = subprocess.run(
+            ["git", "-C", str(ROOT), "rev-parse", "HEAD"], check=True, capture_output=True, text=True
+        ).stdout.strip()
+        changes = subprocess.run(
+            ["git", "-C", str(ROOT), "status", "--porcelain", "--untracked-files=no"],
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown"
+    # A dirty tree cannot be reproduced from the commit, which the consumer's sync check relies on.
+    return f"{commit}-dirty" if changes else commit
+
+
+def locked_skills(lock: Path) -> set[str]:
+    if not lock.is_file():
+        return set()
+    return {
+        parts[1]
+        for parts in (line.split() for line in lock.read_text(encoding="utf-8").splitlines())
+        if len(parts) == 2 and parts[0] == "skill" and NAME_RE.fullmatch(parts[1])
+    }
+
+
+def prompt_owner(line: str) -> str | None:
+    match = re.match(r"Use \$([a-z0-9-]+)\b", line)
+    return match.group(1) if match else None
+
+
+def sync_default_prompts(manifest_path: Path, prompts: dict[str, str], removed: set[str]) -> None:
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    lines = [line for line in manifest["interface"]["defaultPrompt"] if prompt_owner(line) not in removed]
+    positions = {prompt_owner(line): index for index, line in enumerate(lines)}
+    for name, prompt in prompts.items():
+        if name in positions:
+            lines[positions[name]] = prompt
+        else:
+            lines.append(prompt)
+    manifest["interface"]["defaultPrompt"] = lines
+    manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
 def export(target: Path) -> int:
     skills_dir = target / "skills"
-    if not skills_dir.is_dir():
-        print(f"error: {skills_dir} is not a directory", file=sys.stderr)
+    manifest_path = target / MANIFEST
+    if not skills_dir.is_dir() or not manifest_path.is_file():
+        print(f"error: {target} is not a universal-agent-skills checkout", file=sys.stderr)
         return 1
     prompts = sorted(p for folder in FOLDERS for p in (ROOT / folder).glob("*.md"))
     names = {skill_name(p) for p in prompts}
     if names != set(SKILLS):
         print(f"error: prompt files and SKILLS table differ: {sorted(names ^ set(SKILLS))}", file=sys.stderr)
         return 1
+    default_prompts: dict[str, str] = {}
     for path in prompts:
         name = skill_name(path)
         display, short, description = SKILLS[name]
@@ -231,6 +290,7 @@ def export(target: Path) -> int:
         if "TODO" in body or re.search(r"\{\{(Describe|Paste) ", body):
             print(f"error: {path}: unconverted marker in exported body", file=sys.stderr)
             return 1
+        default_prompts[name] = default_prompt(name, short)
         skill = skills_dir / name
         (skill / "agents").mkdir(parents=True, exist_ok=True)
         (skill / "SKILL.md").write_text(
@@ -241,9 +301,22 @@ def export(target: Path) -> int:
             "interface:\n"
             f"  display_name: {yaml_quote(display)}\n"
             f"  short_description: {yaml_quote(short)}\n"
-            f"  default_prompt: {yaml_quote(f'Use ${name} to {short[0].lower()}{short[1:]}.')}\n",
+            f"  default_prompt: {yaml_quote(default_prompts[name])}\n",
             encoding="utf-8",
         )
+    lock = target / LOCK
+    removed = locked_skills(lock) - names
+    for name in sorted(removed):
+        if (skills_dir / name / "SKILL.md").is_file():
+            shutil.rmtree(skills_dir / name)
+            print(f"removed {name}, which no longer has a prompt")
+    sync_default_prompts(manifest_path, default_prompts, removed)
+    lock.write_text(
+        "# Written by scripts/export-skills.py in AI_prompts; rerun the export instead of editing.\n"
+        f"source {SOURCE}\n"
+        f"commit {source_commit()}\n" + "".join(f"skill {name}\n" for name in sorted(names)),
+        encoding="utf-8",
+    )
     print(f"exported {len(prompts)} skills to {skills_dir}")
     return 0
 
